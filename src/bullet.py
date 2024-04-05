@@ -23,5 +23,11 @@ class Bullet:
                        (int(self.x), int(self.y)), 
                        self.radius)
     
+  def reset(self, x, y, angle):
+    self.x = x
+    self.y = y
+    self.angle = angle
+    self.alive = True
+
   def is_alive(self):
     return self.alive
