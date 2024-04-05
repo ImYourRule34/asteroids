@@ -35,17 +35,18 @@ class Player:
 
   def rotate_left(self):
     self.angle -= self.rotation_speed
-    if self.angle < 0:
-      self.angle += 360
+    self.angle %= 360
+    print(f"Rotating left: {self.angle}")
 
   def rotate_right(self):
     self.angle += self.rotation_speed
-    if self.angle >= 360:
-      self.angle -= 360
+    self.angle %= 360
+    print(f"Rotating right: {self.angle}")
 
   def accelerate(self):
-    self.speed += .1
+    self.speed += 0.1
     self.speed = min(self.speed, self.max_speed)
+    print(f"Accelerating: {self.speed}")
 
   def shoot(self, bullets_list):
     if len(bullets_list) < 20:

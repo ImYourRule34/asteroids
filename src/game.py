@@ -1,6 +1,6 @@
 import pygame
 import player
-import asteroid
+import utils
 import settings
 
 class Game:
@@ -15,7 +15,9 @@ class Game:
 
     def handle_events(self):
         for event in pygame.event.get():
-            self.running = False
+            if event.type == pygame.QUIT:
+                self.running = False
+                
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.player.rotate_left()
@@ -40,19 +42,38 @@ class Game:
             # Handle other events (e.g., key presses)
 
     def update(self):
-        # Update game entities
         self.player.update()
-        # Update asteroids and bullets
+        for bullet in self.bullets[:]:
+            bullet.update()
+            if not bullet.is_alive():
+                self.bullets.remove(bullet)
+            else:
+                for asteroid in self.asteroids[:]:  
+                    if utils.check_collision(bullet, asteroid):
+                        self.asteroids.remove(asteroid)
+                        bullet.alive = False
+                        break
+
+        for asteroid in self.asteroids:
+            asteroid.update()
+            if utils.check_collision(self.player, asteroid):
+                pass
+
 
     def draw(self):
         self.screen.fill(settings.BLACK)
         self.player.draw()
-        # Draw asteroids and bullets
+        for bullet in self.bullets:
+            bullet.draw()
+        for asteroid in self.asteroids:
+            asteroid.draw()
+        self.draw_ui()
         pygame.display.flip()
+
 
     def draw_ui(self):
         ammo_count = 20 - len([b for b in self.bullets if b.is_alive()])
         ammo_text = f"Ammo: {ammo_count}"
         font = pygame.font.SysFont(None, 36)
         text_surf = font.render(ammo_text, True, settings.WHITE)
-        self.screen.blit(text_surf, (10, self.scree.get_height() - 40))
+        self.screen.blit(text_surf, (10, self.screen.get_height() - 40))
