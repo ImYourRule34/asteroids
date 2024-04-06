@@ -13,6 +13,7 @@ class Player:
     self.rotation_speed = 3
     self.color = settings.WHITE
     self.size = 20
+    self.score = 0
     self.max_speed = 3
     self.decel = .99
     self.radius = 15

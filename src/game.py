@@ -5,11 +5,13 @@ import settings
 from asteroid import Asteroid
 import random
 import math
+from aux_ui import show_start_screen, show_game_over_screen
 
 class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((settings.SCREEN_WIDTH, 
                                                settings.SCREEN_HEIGHT))
+        self.state = 'START'
         self.clock = pygame.time.Clock()
         self.running = True
         self.player = player.Player(400, 300, self.screen)
@@ -75,10 +77,29 @@ class Game:
 
     def run(self):
         while self.running:
-            self.handle_events()
-            self.update()
-            self.draw()
-            self.clock.tick(120)
+            if self.state == 'START':
+                show_start_screen(self.screen)
+                self.state = 'RUNNING'
+            elif self.state == 'RUNNING':
+                self.handle_events()
+                self.draw()
+                pygame.display.flip()
+                self.clock.tick(120)
+            elif self.state == 'FINISH':
+                show_game_over_screen(self.screen, self.score)
+                self.state == 'START'
+
+    def reset_game(self):
+        self.asteroids.clear()
+        self.bullets.clear()
+        self.play = player.Player(400, 300, self.screen)
+        self.score = 0
+        self.current_wave = 1
+        self.asteroids_in_wave = 3
+        self.last_wave_time = pygame.time.get_ticks()
+        self.angle = 0
+        self.speed_x = 0
+        self.speed_y = 0
 
     def update(self):
         current_time = pygame.time.get_ticks()
