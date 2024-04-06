@@ -17,7 +17,7 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-                
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.player.rotate_left()
@@ -34,12 +34,6 @@ class Game:
             self.update()
             self.draw()
             self.clock.tick(120)
-
-    def handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            # Handle other events (e.g., key presses)
 
     def update(self):
         self.player.update()

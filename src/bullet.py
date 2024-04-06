@@ -1,4 +1,5 @@
 import pygame
+import math
 
 class Bullet:
   def __init__(self, x, y, angle, color, speed, screen):
@@ -12,8 +13,8 @@ class Bullet:
     self.alive = True
   
   def update(self):
-    self.x += self.speed * pygame.math.cos(self.angle)
-    self.y += self.speed * pygame.math.sin(self.angle)
+    self.x += self.speed * math.cos(self.angle)
+    self.y += self.speed * math.sin(self.angle)
     if (self.x <0 or self.x > self.screen.get_width() or 
         self.y < 0 or self.y > self.screen.get_height()):
       self.alive = False
