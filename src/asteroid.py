@@ -12,6 +12,7 @@ class Asteroid:
     self.speed = random.uniform(1, 3)
     self.color = (100, 100, 100)
     self.radius = {"large": 60, "medium": 40, "small": 20}[self.size]
+    self.marked_for_removal = False
 
   def update(self):
     self.x += math.cos(self.angle) * self.speed

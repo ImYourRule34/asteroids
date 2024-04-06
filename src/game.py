@@ -14,8 +14,10 @@ class Game:
         self.player = player.Player(400, 300, self.screen)
         self.asteroids = []
         self.bullets = []
-        self.last_spawn_time = 0
-        self.spawn_interval = 5000
+        self.current_wave = 1
+        self.asteroids_in_wave = 3
+        self.time_between_waves = 5000
+        self.last_wave_time = pygame.time.get_ticks()
 
     def spawn_asteroids(self):
         edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -34,6 +36,13 @@ class Game:
         size = random.choice(['large', 'medium', 'small'])
         new_asteroid = Asteroid(x, y, size, self.screen)
         self.asteroids.append(new_asteroid)
+
+    def spawn_wave(self):
+        for _ in range(self.asteroids_in_wave):
+            self.spawn_asteroids()
+        self.current_wave += 1
+        self.asteroids_in_wave = min(5 + self.current_wave, 15)
+        self.time_between_waves = max(5000, self.time_between_waves - 100)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -60,9 +69,9 @@ class Game:
 
     def update(self):
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_spawn_time > self.spawn_interval:
-            self.spawn_asteroids()
-            self.last_spawn_time = current_time
+        if current_time - self.last_wave_time > self.time_between_waves:
+            self.spawn_wave()
+            self.last_wave_time = current_time
 
         self.player.update()
         for bullet in self.bullets[:]:
@@ -96,7 +105,7 @@ class Game:
 
 
     def draw_ui(self):
-        ammo_count = 10 - len([b for b in self.bullets if b.is_alive()])
+        ammo_count = 5 - len([b for b in self.bullets if b.is_alive()])
         ammo_text = f"Ammo: {ammo_count}"
         font = pygame.font.SysFont(None, 36)
         text_surf = font.render(ammo_text, True, settings.WHITE)
