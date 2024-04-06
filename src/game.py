@@ -21,6 +21,8 @@ class Game:
         self.asteroids_in_wave = 3
         self.time_between_waves = 5000
         self.last_wave_time = pygame.time.get_ticks()
+        self.score = 0
+        self.lives = 3
 
     def spawn_asteroids(self):
         edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -195,6 +197,14 @@ class Game:
         box_height = dot_radius * 2 + box_padding * 2
         box_x = 12 + start_x - box_padding
         box_y = start_y - dot_radius - box_padding
+
+        font = pygame.font.SysFont(None, 24)
+        score_text = f"Score: {self.score}"
+        lives_text = f"Lives: {self.lives}"
+        score_surf = font.render(score_text, True, settings.WHITE)
+        lives_surf = font.render(lives_text, True, settings.WHITE)
+        self.screen.blit(score_surf, (10, 10))
+        self.screen.blit(lives_surf, (10, 35))
 
         pygame.draw.rect(self.screen, settings.OFF_WHITE, 
                          pygame.Rect(box_x, box_y, box_width, box_height))
