@@ -15,6 +15,7 @@ class Player:
     self.size = 20
     self.max_speed = 3
     self.decel = .99
+    self.radius = 15
 
   def update(self):
     self.speed_x *= self.decel

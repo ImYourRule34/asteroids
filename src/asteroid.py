@@ -11,7 +11,7 @@ class Asteroid:
     self.angle = random.uniform(0, 2 * math.pi)
     self.speed = random.uniform(1, 3)
     self.color = (100, 100, 100)
-    self.radius = {"Large": 60, "medium": 40, "small": 20}[self.size]
+    self.radius = {"large": 60, "medium": 40, "small": 20}[self.size]
 
   def update(self):
     self.x += math.cos(self.angle) * self.speed
