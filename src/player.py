@@ -9,10 +9,10 @@ class Player:
     self.screen = screen
     self.angle = 0
     self.speed = 0
-    self.rotation_speed = 5
+    self.rotation_speed = 3
     self.color = settings.WHITE
     self.size = 20
-    self.max_speed = 5
+    self.max_speed = 3
     self.decel = .99
 
   def update(self):
@@ -36,17 +36,14 @@ class Player:
   def rotate_left(self):
     self.angle -= self.rotation_speed
     self.angle %= 360
-    print(f"Rotating left: {self.angle}")
 
   def rotate_right(self):
     self.angle += self.rotation_speed
     self.angle %= 360
-    print(f"Rotating right: {self.angle}")
 
   def accelerate(self):
     self.speed += 0.1
     self.speed = min(self.speed, self.max_speed)
-    print(f"Accelerating: {self.speed}")
 
   def shoot(self, bullets_list):
     if len(bullets_list) < 20:

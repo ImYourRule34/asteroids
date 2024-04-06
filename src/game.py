@@ -17,7 +17,10 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.player.shoot(self.bullets)
+                    
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.player.rotate_left()
@@ -25,8 +28,6 @@ class Game:
             self.player.rotate_right()
         if keys[pygame.K_UP]:
             self.player.accelerate()
-        if keys[pygame.K_SPACE]:
-            self.player.shoot(self.bullets)
 
     def run(self):
         while self.running:
