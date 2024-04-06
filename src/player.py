@@ -8,7 +8,8 @@ class Player:
     self.y = y
     self.screen = screen
     self.angle = 0
-    self.speed = 0
+    self.speed_x = 0
+    self.speed_y = 0
     self.rotation_speed = 3
     self.color = settings.WHITE
     self.size = 20
@@ -16,10 +17,12 @@ class Player:
     self.decel = .99
 
   def update(self):
-    self.speed *= self.decel
+    self.speed_x *= self.decel
+    self.speed_y *= self.decel
 
-    self.x += math.cos(math.radians(self.angle)) * self.speed
-    self.y += math.sin(math.radians(self.angle)) * self.speed
+    self.x += self.speed_x
+    self.y += self.speed_y
+
 
     self.x %= self.screen.get_width()
     self.y %= self.screen.get_height()
@@ -42,8 +45,20 @@ class Player:
     self.angle %= 360
 
   def accelerate(self):
-    self.speed += 0.1
-    self.speed = min(self.speed, self.max_speed)
+      thrust_x = math.cos(math.radians(self.angle)) * 0.1
+      thrust_y = math.sin(math.radians(self.angle)) * 0.1
+
+      self.speed_x += thrust_x
+      self.speed_y += thrust_y
+
+      self.speed = math.sqrt(self.speed_x ** 2 + self.speed_y ** 2)
+      
+      if self.speed > self.max_speed:
+          normalized_speed_x = self.speed_x / self.speed
+          normalized_speed_y = self.speed_y / self.speed
+          self.speed_x = normalized_speed_x * self.max_speed
+          self.speed_y = normalized_speed_y * self.max_speed
+          self.speed = self.max_speed
 
   def shoot(self, bullets_list):
     if len(bullets_list) < 20:
