@@ -53,7 +53,9 @@ class Game:
             asteroid.update()
             if utils.check_collision(self.player, asteroid):
                 pass
-
+        
+        self.asteroids = [a for a in self.asteroids if 
+                          not getattr(a, 'marked_for_removal', False)]
 
     def draw(self):
         self.screen.fill(settings.BLACK)

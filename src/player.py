@@ -24,8 +24,20 @@ class Player:
     self.y += self.speed_y
 
 
-    self.x %= self.screen.get_width()
-    self.y %= self.screen.get_height()
+    wrap_margin = 50
+
+    screen_width = self.screen.get_width()
+    screen_height = self.screen.get_height()
+
+    if self.x < -wrap_margin:
+        self.x = screen_width + wrap_margin
+    elif self.x > screen_width + wrap_margin:
+        self.x = -wrap_margin
+
+    if self.y < -wrap_margin:
+        self.y = screen_height + wrap_margin
+    elif self.y > screen_height + wrap_margin:
+        self.y = -wrap_margin
 
   def draw(self):
     front = (self.x + math.cos(math.radians(self.angle)) * self.size,
@@ -52,7 +64,7 @@ class Player:
       self.speed_y += thrust_y
 
       self.speed = math.sqrt(self.speed_x ** 2 + self.speed_y ** 2)
-      
+
       if self.speed > self.max_speed:
           normalized_speed_x = self.speed_x / self.speed
           normalized_speed_y = self.speed_y / self.speed

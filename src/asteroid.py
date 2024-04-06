@@ -11,13 +11,14 @@ class Asteroid:
     self.angle = random.uniform(0, 2 * math.pi)
     self.speed = random.uniform(1, 3)
     self.color = (100, 100, 100)
-    self.radius = self.size * 20
+    self.radius = {"Large": 60, "medium": 40, "small": 20}[self.size]
 
   def update(self):
     self.x += math.cos(self.angle) * self.speed
     self.y += math.sin(self.angle) * self.speed
-    self.x %= self.screen.get_width()
-    self.y %= self.screen.get_height()
+    if (self.x < -100 or self.x > self.screen.get_width() + 100 or
+        self.y < -100 or self.y > self.screen.get_height() + 100):
+      self.marked_for_removal = True
 
   def draw(self):
     pygame.draw.circle(self.screen, self.color, 
