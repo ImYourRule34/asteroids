@@ -167,6 +167,8 @@ class Game:
 
         self.asteroids = [a for a in self.asteroids if 
                           not getattr(a, 'marked_for_removal', False)]
+    
+
 
     def handle_asteroid_destruction(self, asteroid):
         if asteroid.size == 'large':
@@ -177,6 +179,13 @@ class Game:
             new_sizes = []
         
         angle_spread = math.pi / 3
+        
+        asteroid_points = {
+            'large': 10,
+            'medium': 15,
+            'small': 20
+        }
+        self.score += asteroid_points.get(asteroid.size, 0)
 
         for size in new_sizes:
             new_angle_variation = random.uniform(-angle_spread, angle_spread)
