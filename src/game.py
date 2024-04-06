@@ -4,6 +4,7 @@ import utils
 import settings
 from asteroid import Asteroid
 import random
+import math
 
 class Game:
     def __init__(self):
@@ -24,17 +25,24 @@ class Game:
         if edge == 'top':
             x = random.uniform(0, settings.SCREEN_WIDTH)
             y = -50
+            angle = random.uniform(-math.pi / 2, math.pi / 2)
         elif edge == 'bottom':
             x = random.uniform(0, settings.SCREEN_WIDTH)
             y = settings.SCREEN_HEIGHT + 50
+            angle = random.uniform(math.pi / 2, 3 * math.pi / 2)
         elif edge == 'left':
             x = -50
             y = random.uniform(0, settings.SCREEN_HEIGHT)
+            angle = random.uniform(0, math.pi)
         elif edge == 'right':
             x = settings.SCREEN_WIDTH + 50
             y = random.uniform(0, settings.SCREEN_HEIGHT)
+            angle = random.uniform(-math.pi, 0)
+
         size = random.choice(['large', 'medium', 'small'])
-        new_asteroid = Asteroid(x, y, size, self.screen)
+        speed = random.uniform(1, 3)
+
+        new_asteroid = Asteroid(x, y, size, self.screen, angle, speed)
         self.asteroids.append(new_asteroid)
 
     def spawn_wave(self):
@@ -81,17 +89,37 @@ class Game:
             else:
                 for asteroid in self.asteroids[:]:  
                     if utils.check_collision(bullet, asteroid):
-                        self.asteroids.remove(asteroid)
+                        self.handle_asteroid_destruction(asteroid)
                         bullet.alive = False
                         break
-
+        
         for asteroid in self.asteroids:
             asteroid.update()
-            if utils.check_collision(self.player, asteroid):
-                pass
-        
+
         self.asteroids = [a for a in self.asteroids if 
                           not getattr(a, 'marked_for_removal', False)]
+
+    def handle_asteroid_destruction(self, asteroid):
+        if asteroid.size == 'large':
+            new_sizes = ['medium', 'medium']
+        elif asteroid.size == 'medium':
+            new_sizes = ['small', 'small', 'small']
+        else:
+            new_sizes = []
+        
+        angle_spread = math.pi / 6
+
+        for size in new_sizes:
+            new_angle_variation = random.uniform(-angle_spread, angle_spread)
+            new_angle = asteroid.angle + new_angle_variation
+
+            new_speed = asteroid.speed + random.uniform(0.5, 1.5)
+
+            new_asteroid = Asteroid(asteroid.x, asteroid.y, size, self.screen, 
+                                    new_angle, new_speed)
+            self.asteroids.append(new_asteroid)
+
+        self.asteroids.remove(asteroid)
 
     def draw(self):
         self.screen.fill(settings.BLACK)

@@ -75,7 +75,8 @@ class Player:
 
   def shoot(self, bullets_list):
     if len(bullets_list) < 5:
-        reusable_bullet = next((b for b in bullets_list if not b.is_alive()), None)
+        reusable_bullet = next((b for b in bullets_list if not 
+                                b.is_alive()), None)
         if reusable_bullet:
             reusable_bullet.reset(self.x, self.y, math.radians(self.angle))
         else:
