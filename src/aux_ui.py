@@ -28,7 +28,7 @@ def show_game_over_screen(screen, score):
   draw_text(screen, f"Score: {score}", 
             (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT // 2), 
             32, settings.OFF_WHITE)
-  draw_text(screen, "Press any key to restart", 
+  draw_text(screen, "Press 'r' to restart", 
             (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT * 2 // 3), 
             24, settings.OFF_WHITE)
 
