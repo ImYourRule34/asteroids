@@ -2,6 +2,8 @@ import pygame
 import player
 import utils
 import settings
+from asteroid import Asteroid
+import random
 
 class Game:
     def __init__(self):
@@ -12,6 +14,9 @@ class Game:
         self.player = player.Player(400, 300, self.screen)
         self.asteroids = []
         self.bullets = []
+
+    def spawn_asteroids(self):
+        edge = random.
 
     def handle_events(self):
         for event in pygame.event.get():
