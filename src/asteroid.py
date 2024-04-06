@@ -15,10 +15,8 @@ class Asteroid:
     self.marked_for_removal = False
 
   def update(self):
-    print(f"Before Update - X: {self.x}, Y: {self.y}, Speed: {self.speed}, Angle: {self.angle}")
     self.x += math.cos(self.angle) * self.speed
     self.y += math.sin(self.angle) * self.speed
-    print(f"After Update - X: {self.x}, Y: {self.y}")
     if (self.x < -100 or self.x > self.screen.get_width() + 100 or
         self.y < -100 or self.y > self.screen.get_height() + 100):
       self.marked_for_removal = True

@@ -59,6 +59,11 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.player.shoot(self.bullets)
+            elif event.type == pygame.VIDEORESIZE:
+                self.screen = pygame.display.set_mode((event.w, event.h), 
+                                                       pygame.RESIZABLE)
+                settings.SCREEN_WIDTH = event.w
+                settings.SCREEN_HEIGHT = event.h
                     
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -80,6 +85,21 @@ class Game:
         if current_time - self.last_wave_time > self.time_between_waves:
             self.spawn_wave()
             self.last_wave_time = current_time
+
+        if self.current_wave > 30:
+            self.asteroids_in_wave = 20
+        elif self.current_wave > 23:
+            self.asteroids_in_wave = 13
+        elif self.current_wave > 15:
+            self.asteroids_in_wave = 12
+        elif self.current_wave > 12:
+            self.asteroids_in_wave = 9
+        elif self.current_wave > 9:
+            self.asteroids_in_wave = 7
+        elif self.asteroids_in_wave > 7:
+            self.asteroids_in_wave = 6
+        elif self.asteroids_in_wave > 5:
+            self.asteroids_in_wave = 5
 
         self.player.update()
         for bullet in self.bullets[:]:
@@ -107,7 +127,7 @@ class Game:
         else:
             new_sizes = []
         
-        angle_spread = math.pi / 6
+        angle_spread = math.pi / 3
 
         for size in new_sizes:
             new_angle_variation = random.uniform(-angle_spread, angle_spread)
@@ -134,7 +154,20 @@ class Game:
 
     def draw_ui(self):
         ammo_count = 5 - len([b for b in self.bullets if b.is_alive()])
-        ammo_text = f"Ammo: {ammo_count}"
-        font = pygame.font.SysFont(None, 36)
-        text_surf = font.render(ammo_text, True, settings.WHITE)
-        self.screen.blit(text_surf, (10, self.screen.get_height() - 40))
+        dot_radius = 5
+        dot_spacing = 15
+        start_x = 10
+        start_y = self.screen.get_height() - 40
+        box_padding = 5
+        
+        box_width = ammo_count * dot_spacing + box_padding * 2
+        box_height = dot_radius * 2 + box_padding * 2
+        box_x = 12 + start_x - box_padding
+        box_y = start_y - dot_radius - box_padding
+
+        pygame.draw.rect(self.screen, settings.OFF_WHITE, 
+                         pygame.Rect(box_x, box_y, box_width, box_height))
+        for i in range(ammo_count):
+            dot_x = 20 + start_x + i * dot_spacing
+            pygame.draw.circle(self.screen, settings.RED, 
+            (dot_x, start_y), dot_radius)
