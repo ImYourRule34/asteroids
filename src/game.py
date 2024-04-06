@@ -82,6 +82,7 @@ class Game:
                 self.state = 'RUNNING'
             elif self.state == 'RUNNING':
                 self.handle_events()
+                self.update()
                 self.draw()
                 pygame.display.flip()
                 self.clock.tick(120)
@@ -96,6 +97,7 @@ class Game:
         self.score = 0
         self.current_wave = 1
         self.asteroids_in_wave = 3
+        self.lives = 3
         self.last_wave_time = pygame.time.get_ticks()
         self.angle = 0
         self.speed_x = 0
@@ -107,7 +109,9 @@ class Game:
             self.spawn_wave()
             self.last_wave_time = current_time
 
-        if self.current_wave > 30:
+        if self.current_wave >= 35:
+            self.asteroids_in_wave += 1
+        elif self.current_wave > 30:
             self.asteroids_in_wave = 20
         elif self.current_wave > 23:
             self.asteroids_in_wave = 13
@@ -134,8 +138,14 @@ class Game:
                         bullet.alive = False
                         break
         
-        for asteroid in self.asteroids:
+        for asteroid in self.asteroids[:]:
             asteroid.update()
+            if utils.check_collision(self.player, asteroid):
+                self.lives -= 1
+                self.asteroids.remove(asteroid)
+                if self.lives <= 0:
+                    self.state = 'FINISH'
+                    break
 
         self.asteroids = [a for a in self.asteroids if 
                           not getattr(a, 'marked_for_removal', False)]

@@ -14,6 +14,7 @@ class Player:
     self.color = settings.WHITE
     self.size = 20
     self.score = 0
+    self.lives = 3
     self.max_speed = 3
     self.decel = .99
     self.radius = 15

@@ -9,16 +9,9 @@ def draw_text(screen, text, position, size, color):
 
 def show_start_screen(screen):
   screen.fill(settings.BLACK)
-  draw_text(screen, "ASTEROIDS", (settings.SCREEN_WIDTH//2, 
-                                  settings.SCREEN_HEIGHT,
-                                  64, settings.OFF_WHITE))
-  draw_text(screen, "Press any key to start", (settings.SCREEN_WIDTH // 2,
-                                               settings.SCREEN_HEIGHT // 2,
-                                               32, settings.OFF_WHITE))
-  draw_text(screen, "Use arrow keys to move and \
-            space to shoot", (settings.SCREEN_WIDTH, 
-                              settings.SCREEN_HEIGHT * 3 // 4, 
-                              24, settings.OFF_WHITE))
+  draw_text(screen, "ASTEROIDS", (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT // 4), 64, settings.OFF_WHITE)
+  draw_text(screen, "Press any key to start", (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT // 2), 32, settings.OFF_WHITE)
+  draw_text(screen, "Use arrow keys to move and space to shoot", (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT * 3 // 4), 24, settings.OFF_WHITE)
   
   pygame.display.flip()
   waiting = True
