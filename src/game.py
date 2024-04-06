@@ -90,7 +90,23 @@ class Game:
                 self.clock.tick(120)
             elif self.state == 'FINISH':
                 show_game_over_screen(self.screen, self.score)
-                self.state == 'START'
+                self.wait_for_input_after_game_over()
+
+    def wait_for_input_after_game_over(self):
+        waiting = True
+        while waiting: 
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    waiting = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.state = 'START'
+                        self.reset_game()
+                        waiting = False
+                    elif event.key == pygame.K_ESCAPE:
+                        self.running = False
+                        waiting = False
 
     def reset_game(self):
         self.asteroids.clear()
