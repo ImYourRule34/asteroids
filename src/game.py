@@ -6,6 +6,7 @@ from asteroid import Asteroid
 import random
 import math
 from aux_ui import show_start_screen, show_game_over_screen
+from score_manager import read_scores, write_scores
 
 class Game:
     def __init__(self):
@@ -80,7 +81,8 @@ class Game:
     def run(self):
         while self.running:
             if self.state == 'START':
-                show_start_screen(self.screen)
+                top_scores = read_scores()
+                show_start_screen(self.screen, top_scores)
                 self.state = 'RUNNING'
             elif self.state == 'RUNNING':
                 self.handle_events()
@@ -90,7 +92,17 @@ class Game:
                 self.clock.tick(120)
             elif self.state == 'FINISH':
                 show_game_over_screen(self.screen, self.score)
+                self.check_and_update_high_scores(self.score)
                 self.wait_for_input_after_game_over()
+
+    def check_and_update_high_scores(self, new_score):
+        current_scores = read_scores()
+        if len(current_scores) < 5 or new_score > int(current_scores[-1][1]):
+            player_name = self.prompt_for_name()
+            current_scores.append([player_name, str(new_score)])
+            new_scores = sorted(current_scores, key=lambda x: int(x[1]), reverse=True)[:5]
+            write_scores(new_scores)
+
 
     def wait_for_input_after_game_over(self):
         waiting = True
@@ -179,7 +191,7 @@ class Game:
             new_sizes = []
         
         angle_spread = math.pi / 3
-        
+
         asteroid_points = {
             'large': 10,
             'medium': 15,
