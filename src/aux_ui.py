@@ -27,6 +27,12 @@ def show_start_screen(screen, top_scores):
       if event.type == pygame.KEYDOWN:
         waiting = False
 
+  y_offset = settings.SCREEN_HEIGHT // 4 + 100
+  for i, (name, score) in enumerate(top_scores[:5]):
+     draw_text(screen, f"(i+1). {name} - {score}",
+                (settings.SCREEN_WIDTH // 4, y_offset + i * 30), 
+                24, settings.OFF_WHITE)
+
 def show_game_over_screen(screen, score):
   screen.fill(settings.BLACK)
   draw_text(screen, "GAME OVER", 

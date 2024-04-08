@@ -7,6 +7,7 @@ import random
 import math
 from aux_ui import show_start_screen, show_game_over_screen
 from score_manager import read_scores, write_scores
+import aux_ui
 
 class Game:
     def __init__(self):
@@ -91,16 +92,64 @@ class Game:
                 pygame.display.flip()
                 self.clock.tick(120)
             elif self.state == 'FINISH':
+                player_name = self.prompt_for_name()
+                
+                if player_name:
+                    self.check_and_update_high_scores(self.score, player_name)
                 show_game_over_screen(self.screen, self.score)
-                self.check_and_update_high_scores(self.score)
-                self.wait_for_input_after_game_over()
+                self.wait_for_input_after_game_over
 
-    def check_and_update_high_scores(self, new_score):
-        current_scores = read_scores()
-        if len(current_scores) < 5 or new_score > int(current_scores[-1][1]):
-            player_name = self.prompt_for_name()
-            current_scores.append([player_name, str(new_score)])
-            new_scores = sorted(current_scores, key=lambda x: int(x[1]), reverse=True)[:5]
+    def prompt_for_name(self):
+        self.screen.fill(settings.BLACK)
+        aux_ui.draw_text(self.screen, "Game Over! Enter Your Name:", (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT // 4), 32, pygame.Color('white'))
+
+        input_box = pygame.Rect(settings.SCREEN_WIDTH // 4, settings.SCREEN_HEIGHT // 2, settings.SCREEN_WIDTH // 2, 50)
+        color_inactive = pygame.Color('lightskyblue3')
+        color_active = pygame.Color('dodgerblue2')
+        color = color_inactive
+        active = False
+        text = ''
+        font = pygame.font.Font(None, 32)
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return "" 
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if input_box.collidepoint(event.pos):
+                        active = not active
+                    else:
+                        active = False
+                    color = color_active if active else color_inactive
+                if event.type == pygame.KEYDOWN:
+                    if active:
+                        if event.key == pygame.K_RETURN:
+                            return text 
+                        elif event.key == pygame.K_BACKSPACE:
+                            text = text[:-1]
+                        else:
+                            text += event.unicode 
+
+            self.screen.fill(settings.BLACK) 
+            aux_ui.draw_text(self.screen, "Game Over! Enter Your Name:", (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT // 4), 32, pygame.Color('white'))
+
+            txt_surface = font.render(text, True, color)
+            width = max(200, txt_surface.get_width()+10)
+            input_box.w = width
+            self.screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+            pygame.draw.rect(self.screen, color, input_box, 2)
+
+            pygame.display.flip()
+            self.clock.tick(30)
+
+    def check_and_update_high_scores(self, new_score, player_name):
+        current_scores = read_scores() 
+        current_scores = [(name, int(score)) for name, score in current_scores]
+        
+        if len(current_scores) < 5 or new_score > current_scores[-1][1]:
+            current_scores.append((player_name, new_score))
+            new_scores = sorted(current_scores, 
+                                key=lambda x: x[1], reverse=True)[:5]
             write_scores(new_scores)
 
 
