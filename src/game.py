@@ -28,10 +28,11 @@ class Game:
         self.background = pygame.image.load('assets/images/background/space_background.png').convert()
         self.bg_x = 0
         self.bg_y = 0
-        self.bg_move_speed = .5
-        self.bg_move_direction = 1
-        self.bg_move_switch_timer = 0
-        self.bg_move_switch_interval = 100
+        self.bg_move_speed = .05
+        self.bg_max_move = 20
+        self.bg_width = self.background.get_width()
+        self.bg_height = self.background.get_height()
+
 
     def spawn_asteroids(self):
         edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -287,21 +288,25 @@ class Game:
 
         self.asteroids.remove(asteroid)
 
+    def update_background_position(self):
+        target_x, target_y = 0, 0
+        if self.player.accelerating:
+            angle_rad = math.radians(self.player.angle)
+            target_x = math.cos(angle_rad) * self.bg_max_move * -1  # Invert direction for opposite shift
+            target_y = math.sin(angle_rad) * self.bg_max_move * -1
+
+        self.bg_x += (target_x - self.bg_x) * self.bg_move_speed
+        self.bg_y += (target_y - self.bg_y) * self.bg_move_speed
+
+        self.bg_x = max(min(self.bg_x, self.bg_max_move), -self.bg_max_move)
+        self.bg_y = max(min(self.bg_y, self.bg_max_move), -self.bg_max_move)
+
     def draw(self):
         self.screen.fill((0, 0, 0))
 
-        self.screen.blit(self.background, (self.bg_x, self.bg_y))
-
-        self.bg_x += self.bg_move_speed * self.bg_move_direction
-        self.bg_y += self.bg_move_speed * self.bg_move_direction
-        self.bg_move_switch_timer += 1
-
-        if self.bg_move_switch_timer >= self.bg_move_switch_interval:
-            self.bg_move_direction *= -1
-            self.bg_move_switch_timer = 0
-
-        self.bg_x = max(min(self.bg_x, 5), -5)
-        self.bg_y = max(min(self.bg_y, 5), -5)
+        self.update_background_position()
+        bg_pos = (self.bg_x - self.bg_max_move, self.bg_y - self.bg_max_move)
+        self.screen.blit(self.background, bg_pos)
 
         self.player.draw()
         for bullet in self.bullets:
@@ -309,6 +314,7 @@ class Game:
         for asteroid in self.asteroids:
             asteroid.draw()
         self.draw_ui()
+        
         pygame.display.flip()
 
 
