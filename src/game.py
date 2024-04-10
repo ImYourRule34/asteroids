@@ -186,6 +186,8 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
                     waiting = False
+                    pygame.quit()
+                    return
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
                         self.reset_game()
@@ -213,6 +215,8 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
                     waiting = False
+                    pygame.quit()
+                    return
                 elif event.type == pygame.KEYDOWN:
                     waiting = False
 
