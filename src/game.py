@@ -28,7 +28,10 @@ class Game:
         self.background = pygame.image.load('assets/images/background/space_background.png').convert()
         self.bg_x = 0
         self.bg_y = 0
-        self.bg_move_speed = 1
+        self.bg_move_speed = .5
+        self.bg_move_direction = 1
+        self.bg_move_switch_timer = 0
+        self.bg_move_switch_interval = 100
 
     def spawn_asteroids(self):
         edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -285,17 +288,20 @@ class Game:
         self.asteroids.remove(asteroid)
 
     def draw(self):
+        self.screen.fill((0, 0, 0))
+
         self.screen.blit(self.background, (self.bg_x, self.bg_y))
-        self.screen.blit(self.background, (self.bg_x - self.background.get_width(), self.bg_y))  # Wrap horizontally
-        self.screen.blit(self.background, (self.bg_x, self.bg_y - self.background.get_height()))  # Wrap vertically
 
-        self.bg_x += self.bg_move_speed
-        if self.bg_x >= self.background.get_width():
-            self.bg_x = 0
+        self.bg_x += self.bg_move_speed * self.bg_move_direction
+        self.bg_y += self.bg_move_speed * self.bg_move_direction
+        self.bg_move_switch_timer += 1
 
-        self.bg_y += self.bg_move_speed
-        if self.bg_y >= self.background.get_height():
-            self.bg_y = 0
+        if self.bg_move_switch_timer >= self.bg_move_switch_interval:
+            self.bg_move_direction *= -1
+            self.bg_move_switch_timer = 0
+
+        self.bg_x = max(min(self.bg_x, 5), -5)
+        self.bg_y = max(min(self.bg_y, 5), -5)
 
         self.player.draw()
         for bullet in self.bullets:
