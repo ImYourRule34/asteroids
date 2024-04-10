@@ -36,6 +36,7 @@ class Game:
         self.explosion_sound.set_volume(0.5)
         self.shooting_sound = pygame.mixer.Sound('assets/sounds/ship/laser.wav')
         self.shooting_sound.set_volume(.05)
+        self.collision_sound = pygame.mixer.Sound('assets/sounds/ship/crash.wav')
 
     def spawn_asteroids(self):
         edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -252,6 +253,7 @@ class Game:
             asteroid.update()
             if utils.check_collision(self.player, asteroid):
                 self.lives -= 1
+                self.collision_sound.play()
                 self.asteroids.remove(asteroid)
                 if self.lives <= 0:
                     self.state = 'FINISH'
