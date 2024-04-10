@@ -37,6 +37,8 @@ class Game:
         self.shooting_sound = pygame.mixer.Sound('assets/sounds/ship/laser.wav')
         self.shooting_sound.set_volume(.05)
         self.collision_sound = pygame.mixer.Sound('assets/sounds/ship/crash.wav')
+        self.start_menu_music = 'assets/sounds/music/loading.mp3'
+        self.gameplay_music = 'assets/sounds/music/game.mp3'
 
     def spawn_asteroids(self):
         edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -91,20 +93,31 @@ class Game:
         if keys[pygame.K_UP]:
             self.player.accelerate()
 
+    def play_music(self, music_file):
+        pygame.mixer.music.load(music_file)
+        pygame.mixer.music.play(-1)
+
     def run(self):
         while self.running:
             if self.state == 'START':
+                self.play_music(self.start_menu_music)
+
                 top_scores = read_scores()
                 show_start_screen(self.screen, top_scores)
                 self.wait_for_input_start_screen()
                 self.state = 'RUNNING'
             elif self.state == 'RUNNING':
+                pygame.mixer.music.stop()
+                self.play_music(self.gameplay_music)
+                
                 self.handle_events()
                 self.update()
                 self.draw()
                 pygame.display.flip()
                 self.clock.tick(120)
             elif self.state == 'FINISH':
+                pygame.mixer.music.stop()
+
                 player_name = self.prompt_for_name()
                 
                 if player_name:

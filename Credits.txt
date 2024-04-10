@@ -17,3 +17,7 @@ Laser:
 https://pixabay.com/sound-effects/search/laser/
 Crash:
 https://pixabay.com/sound-effects/search/crashing/
+Loading Screen Music:
+https://pixabay.com/sound-effects/search/loading/
+Game Music:
+https://uppbeat.io/music/theme/space
