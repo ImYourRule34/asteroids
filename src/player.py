@@ -13,11 +13,19 @@ class Player:
     self.rotation_speed = 3
     self.color = settings.WHITE
     self.size = 20
-    self.score = 0
-    self.lives = 3
     self.max_speed = 3
     self.decel = .99
     self.radius = 15
+    self.acceleration_timer = 0
+    self.accelerating = False
+    self.current_thrust = 0
+    self.images = [
+            pygame.transform.rotozoom(
+                pygame.image.load(f'assets/images/ship/ship_thrust_{i}.png').convert_alpha(), -90, 0.5
+            ) for i in range(4)
+        ]
+    self.image = self.images[self.current_thrust]
+    self.rect = self.image.get_rect(center=(x, y + 20))
 
   def update(self):
     self.speed_x *= self.decel
@@ -42,14 +50,22 @@ class Player:
     elif self.y > screen_height + wrap_margin:
         self.y = -wrap_margin
 
+    if self.accelerating:
+        speed_ratio = math.sqrt(self.speed_x**2 + self.speed_y**2) / self.max_speed
+        self.current_thrust = min(int(speed_ratio * 3), 3)
+    else:
+        self.current_thrust = 0
+
+    self.rotate()
+    self.rect.center = (self.x, self.y)
+
+  def rotate(self):
+     self.image = pygame.transform.rotate(self.images[self.current_thrust],
+                                           -self.angle)
+     self.rect = self.image.get_rect(center=self.rect.center)
+
   def draw(self):
-    front = (self.x + math.cos(math.radians(self.angle)) * self.size,
-             self.y + math.sin(math.radians(self.angle)) * self.size)
-    back_left = (self.x + math.cos(math.radians(self.angle + 120)) * self.size, 
-                 self.y + math.sin(math.radians(self.angle + 120)) * self.size)
-    back_right = (self.x + math.cos(math.radians(self.angle - 120)) * self.size, 
-                  self.y + math.sin(math.radians(self.angle - 120)) * self.size)
-    pygame.draw.polygon(self.screen, self.color, [front, back_left, back_right])
+    self.screen.blit(self.image, self.rect.topleft)
 
   def rotate_left(self):
     self.angle -= self.rotation_speed
@@ -60,6 +76,7 @@ class Player:
     self.angle %= 360
 
   def accelerate(self):
+      self.accelerating = True
       thrust_x = math.cos(math.radians(self.angle)) * 0.1
       thrust_y = math.sin(math.radians(self.angle)) * 0.1
 
