@@ -1,12 +1,14 @@
 import pygame
 import math
 import settings
+import game
 
 class Player: 
-  def __init__(self, x, y, screen):
+  def __init__(self, x, y, screen, game):
     self.x = x
     self.y = y
     self.screen = screen
+    self.game = game
     self.angle = 0
     self.speed_x = 0
     self.speed_y = 0
@@ -94,6 +96,7 @@ class Player:
 
   def shoot(self, bullets_list):
     if len(bullets_list) < 5:
+        self.game.shooting_sound.play()
         reusable_bullet = next((b for b in bullets_list if not 
                                 b.is_alive()), None)
         if reusable_bullet:
@@ -108,3 +111,4 @@ class Player:
             from bullet import Bullet
             bullets_list.append(Bullet(bullet_x, bullet_y, bullet_angle,
                                        bullet_color, bullet_speed, self.screen))
+    

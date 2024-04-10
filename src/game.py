@@ -16,7 +16,7 @@ class Game:
         self.state = 'START'
         self.clock = pygame.time.Clock()
         self.running = True
-        self.player = player.Player(400, 300, self.screen)
+        self.player = player.Player(400, 300, self.screen, self)
         self.asteroids = []
         self.bullets = []
         self.current_wave = 1
@@ -33,7 +33,9 @@ class Game:
         self.bg_width = self.background.get_width()
         self.bg_height = self.background.get_height()
         self.explosion_sound = pygame.mixer.Sound('assets/sounds/asteroid/asteroid_explosion.wav')
-
+        self.explosion_sound.set_volume(0.5)
+        self.shooting_sound = pygame.mixer.Sound('assets/sounds/ship/laser.wav')
+        self.shooting_sound.set_volume(.05)
 
     def spawn_asteroids(self):
         edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -201,7 +203,7 @@ class Game:
     def reset_game(self):
         self.asteroids.clear()
         self.bullets.clear()
-        self.play = player.Player(400, 300, self.screen)
+        self.play = player.Player(400, 300, self.screen, self)
         self.score = 0
         self.current_wave = 1
         self.asteroids_in_wave = 3
