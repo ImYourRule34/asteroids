@@ -32,6 +32,7 @@ class Game:
         self.bg_max_move = 20
         self.bg_width = self.background.get_width()
         self.bg_height = self.background.get_height()
+        self.explosion_sound = pygame.mixer.Sound('assets/sounds/asteroid/asteroid_explosion.wav')
 
 
     def spawn_asteroids(self):
@@ -287,6 +288,7 @@ class Game:
             self.asteroids.append(new_asteroid)
 
         self.asteroids.remove(asteroid)
+        self.explosion_sound.play()
 
     def update_background_position(self):
         target_x, target_y = 0, 0
@@ -314,7 +316,7 @@ class Game:
         for asteroid in self.asteroids:
             asteroid.draw()
         self.draw_ui()
-        
+
         pygame.display.flip()
 
 
