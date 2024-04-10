@@ -84,6 +84,7 @@ class Game:
             if self.state == 'START':
                 top_scores = read_scores()
                 show_start_screen(self.screen, top_scores)
+                self.wait_for_input_start_screen()
                 self.state = 'RUNNING'
             elif self.state == 'RUNNING':
                 self.handle_events()
@@ -97,13 +98,19 @@ class Game:
                 if player_name:
                     self.check_and_update_high_scores(self.score, player_name)
                 show_game_over_screen(self.screen, self.score)
-                self.wait_for_input_after_game_over
+                self.wait_for_input_after_game_over()
+                self.state = 'START'
 
     def prompt_for_name(self):
         self.screen.fill(settings.BLACK)
-        aux_ui.draw_text(self.screen, "Game Over! Enter Your Name:", (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT // 4), 32, pygame.Color('white'))
+        aux_ui.draw_text(self.screen, "Game Over! Enter Your Name:", 
+                         (settings.SCREEN_WIDTH // 2, 
+                          settings.SCREEN_HEIGHT // 4), 32, 
+                          pygame.Color('white'))
 
-        input_box = pygame.Rect(settings.SCREEN_WIDTH // 4, settings.SCREEN_HEIGHT // 2, settings.SCREEN_WIDTH // 2, 50)
+        input_box = pygame.Rect(settings.SCREEN_WIDTH // 4, 
+                                settings.SCREEN_HEIGHT // 2, 
+                                settings.SCREEN_WIDTH // 2, 50)
         color_inactive = pygame.Color('lightskyblue3')
         color_active = pygame.Color('dodgerblue2')
         color = color_inactive
@@ -131,7 +138,10 @@ class Game:
                             text += event.unicode 
 
             self.screen.fill(settings.BLACK) 
-            aux_ui.draw_text(self.screen, "Game Over! Enter Your Name:", (settings.SCREEN_WIDTH // 2, settings.SCREEN_HEIGHT // 4), 32, pygame.Color('white'))
+            aux_ui.draw_text(self.screen, "Game Over! Enter Your Name:", 
+                             (settings.SCREEN_WIDTH // 2, 
+                              settings.SCREEN_HEIGHT // 4), 32, 
+                              pygame.Color('white'))
 
             txt_surface = font.render(text, True, color)
             width = max(200, txt_surface.get_width()+10)
@@ -141,6 +151,22 @@ class Game:
 
             pygame.display.flip()
             self.clock.tick(30)
+
+    def wait_for_input_after_game_over(self):
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    waiting = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.reset_game()
+                        self.state = 'START'
+                        waiting = False
+                    elif event.key == pygame.K_ESCAPE:
+                        self.running = False
+                        waiting = False
 
     def check_and_update_high_scores(self, new_score, player_name):
         current_scores = read_scores() 
@@ -153,21 +179,15 @@ class Game:
             write_scores(new_scores)
 
 
-    def wait_for_input_after_game_over(self):
+    def wait_for_input_start_screen(self):
         waiting = True
-        while waiting: 
+        while waiting:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
                     waiting = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
-                        self.state = 'START'
-                        self.reset_game()
-                        waiting = False
-                    elif event.key == pygame.K_ESCAPE:
-                        self.running = False
-                        waiting = False
+                    waiting = False
 
     def reset_game(self):
         self.asteroids.clear()
