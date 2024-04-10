@@ -25,6 +25,10 @@ class Game:
         self.last_wave_time = pygame.time.get_ticks()
         self.score = 0
         self.lives = 3
+        self.background = pygame.image.load('assets/images/background/space_background.png').convert()
+        self.bg_x = 0
+        self.bg_y = 0
+        self.bg_move_speed = 1
 
     def spawn_asteroids(self):
         edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -281,7 +285,18 @@ class Game:
         self.asteroids.remove(asteroid)
 
     def draw(self):
-        self.screen.fill(settings.BLACK)
+        self.screen.blit(self.background, (self.bg_x, self.bg_y))
+        self.screen.blit(self.background, (self.bg_x - self.background.get_width(), self.bg_y))  # Wrap horizontally
+        self.screen.blit(self.background, (self.bg_x, self.bg_y - self.background.get_height()))  # Wrap vertically
+
+        self.bg_x += self.bg_move_speed
+        if self.bg_x >= self.background.get_width():
+            self.bg_x = 0
+
+        self.bg_y += self.bg_move_speed
+        if self.bg_y >= self.background.get_height():
+            self.bg_y = 0
+
         self.player.draw()
         for bullet in self.bullets:
             bullet.draw()
